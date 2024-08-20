@@ -1,0 +1,31 @@
+[
+  {
+      "id": 1,
+      "customerName": "Πελάτης 1",
+      "orderDate": "2024-08-20",
+      "status": "Σε αναμονή",
+      "amount": "100.00€",
+      "shippingCompany": "ACS",
+      "voucherNumber": "V123456",
+      "address": "Οδός 1, Αριθμός 2",
+      "area": "Περιοχή Α",
+      "zip": "12345",
+      "phone": "2101234567",
+      "isCODConfirmed": false
+  },
+  {
+      "id": 2,
+      "customerName": "Πελάτης 2",
+      "orderDate": "2024-08-21",
+      "status": "Ολοκληρωμένη",
+      "amount": "150.00€",
+      "shippingCompany": "Courier4U",
+      "voucherNumber": "V654321",
+      "address": "Οδός 3, Αριθμός 4",
+      "area": "Περιοχή Β",
+      "zip": "23456",
+      "phone": "2102345678",
+      "isCODConfirmed": false
+  }
+
+]
