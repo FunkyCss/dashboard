@@ -1,29 +1,41 @@
 [
     {
-        "id": "1",
+        "id": 1,
         "customerName": "Γιάννης Παπαδόπουλος",
-        "orderDate": "2024-08-15",
+        "orderDate": "2024-08-20",
         "status": "Ολοκληρωμένη",
         "amount": "50.00",
         "products": ["Product 1", "Product 2"],
-        "paymentMethod": "Κάρτα"
+        "paymentMethod": "Κάρτα",
+        "address": "Δεν διατίθεται",
+        "area": "Δεν διατίθεται",
+        "zip": "Δεν διατίθεται",
+        "phone": "Δεν διατίθεται"
     },
     {
-        "id": "2",
-        "customerName": "Ελένη Παπαδοπούλου",
-        "orderDate": "2024-08-16",
-        "status": "Εκκρεμής",
-        "amount": "30.00",
+        "id": 2,
+        "customerName": "Μαρία Ιωάννου",
+        "orderDate": "2024-08-20",
+        "status": "Σε Επεξεργασία",
+        "amount": "75.00",
         "products": ["Product 2", "Product 3"],
-        "paymentMethod": "Αντικαταβολή"
+        "paymentMethod": "Αντικαταβολή",
+        "address": "Οδός 1, Αριθμός 2",
+        "area": "Πόλη 1",
+        "zip": "12345",
+        "phone": "2101234567"
     },
     {
-        "id": "3",
-        "customerName": "Νίκος Γεωργίου",
-        "orderDate": "2024-08-17",
-        "status": "Επιστροφή",
-        "amount": "70.00",
+        "id": 3,
+        "customerName": "Αλέξανδρος Σταμάτης",
+        "orderDate": "2024-08-20",
+        "status": "Ακυρωμένη",
+        "amount": "100.00",
         "products": ["Product 1", "Product 3"],
-        "paymentMethod": "Paypal"
+        "paymentMethod": "Paypal",
+        "address": "Οδός 2, Αριθμός 3",
+        "area": "Πόλη 2",
+        "zip": "67890",
+        "phone": "2107654321"
     }
 ]

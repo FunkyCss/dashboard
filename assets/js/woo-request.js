@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${item.id}</td>
                 <td>${item.customerName}</td>
                 <td>${item.orderDate}</td>
-                <td>${item.status}</td>
                 <td>${item.amount}</td>
                 <td>${item.products.join(', ')}</td>
                 <td>${item.paymentMethod}</td>
@@ -91,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
             filteredData = filteredData.filter(item => item.products.some(product => product.toLowerCase().includes(productValue)));
         }
 
+        // Διορθωμένο φίλτρο πληρωμής
         if (paymentMethodValue) {
             filteredData = filteredData.filter(item => item.paymentMethod === paymentMethodValue);
         }
