@@ -1,0 +1,3 @@
+OrderID,CustomerName,Amount,ConfirmationDate,Status,ShippingCompany,VoucherNumber
+12345,Γιώργος Παπαδόπουλος,150.50,2023-08-10,Επιβεβαιωμένη,ACS,1234567890
+12346,Μαρία Ιωάννου,80.00,2023-08-11,Επιβεβαιωμένη,Speedex,0987654321

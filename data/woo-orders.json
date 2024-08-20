@@ -1,0 +1,29 @@
+[
+    {
+        "id": "1",
+        "customerName": "Γιάννης Παπαδόπουλος",
+        "orderDate": "2024-08-15",
+        "status": "Ολοκληρωμένη",
+        "amount": "50.00",
+        "products": ["Product 1", "Product 2"],
+        "paymentMethod": "Κάρτα"
+    },
+    {
+        "id": "2",
+        "customerName": "Ελένη Παπαδοπούλου",
+        "orderDate": "2024-08-16",
+        "status": "Εκκρεμής",
+        "amount": "30.00",
+        "products": ["Product 2", "Product 3"],
+        "paymentMethod": "Αντικαταβολή"
+    },
+    {
+        "id": "3",
+        "customerName": "Νίκος Γεωργίου",
+        "orderDate": "2024-08-17",
+        "status": "Επιστροφή",
+        "amount": "70.00",
+        "products": ["Product 1", "Product 3"],
+        "paymentMethod": "Paypal"
+    }
+]
