@@ -1,4 +1,0 @@
-OrderID,CustomerName,Amount,ConfirmationDate,Status,ShippingCompany,VoucherNumber
-1,John Doe,150.00,2024-08-20,Επιβεβαιωμένη,DHL,123456789
-2,Jane Smith,200.00,2024-08-21,Επιβεβαιωμένη,FedEx,987654321
-12345,John Doe,100,2024-08-20,Επιβεβαιωμένη,Courier Co.,ABC123

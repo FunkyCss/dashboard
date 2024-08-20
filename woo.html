@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WooCommerce Orders Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css"> <!-- Προσθέστε το CSS αρχείο σας εδώ -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="assets/woo.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">WooCommerce Dashboard</a>
+        </nav>
+    </header>
+    
+    <main class="container mt-4">
+        <section id="filter-section">
+            <h2>Φίλτρα</h2>
+            <form id="filter-form" class="form-inline mb-4">
+                <div class="form-group mr-2">
+                    <label for="customer-name" class="sr-only">Όνομα Πελάτη:</label>
+                    <input type="text" class="form-control" id="customer-name" placeholder="Όνομα Πελάτη">
+                </div>
+                <div class="form-group mr-2">
+                    <label for="date" class="sr-only">Ημερομηνία:</label>
+                    <input type="date" class="form-control" id="date">
+                </div>
+                <div class="form-group mr-2">
+                    <label for="city" class="sr-only">Πόλη:</label>
+                    <input type="text" class="form-control" id="city" placeholder="Πόλη">
+                </div>
+                <div class="form-group mr-2">
+                    <label for="amount" class="sr-only">Ποσό:</label>
+                    <input type="number" class="form-control" id="amount" placeholder="Ποσό">
+                </div>
+                <button type="button" class="btn btn-primary" id="filter-button">Φιλτράρισμα</button>
+            </form>
+        </section>
+        
+        <section id="orders-section">
+            <h2>Παραγγελίες</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Όνομα Πελάτη</th>
+                        <th>Ημερομηνία</th>
+                        <th>Πόλη</th>
+                        <th>Ποσό</th>
+                        <th>Ενέργειες</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                    <!-- Παραγγελίες θα προστεθούν εδώ με JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    
+    <!-- Modal for Order Details -->
+    <div class="modal fade" id="order-details-modal" tabindex="-1" role="dialog" aria-labelledby="order-details-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="order-details-label">Λεπτομέρειες Παραγγελίας</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="order-details-content">
+                    <!-- Λεπτομέρειες παραγγελίας θα προστεθούν εδώ με JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Κλείσιμο</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

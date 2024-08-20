@@ -26,6 +26,49 @@
       "zip": "23456",
       "phone": "2102345678",
       "isCODConfirmed": false
-  }
+  },
+  {
+    "id": 3,
+    "customerName": "Πελάτης 3",
+    "orderDate": "2024-08-21",
+    "status": "Ολοκληρωμένη",
+    "amount": "150.00€",
+    "shippingCompany": "Courier4U",
+    "voucherNumber": "V654321",
+    "address": "Οδός 3, Αριθμός 4",
+    "area": "Περιοχή Β",
+    "zip": "23456",
+    "phone": "2102345678",
+    "isCODConfirmed": false
+},
+{
+  "id": 4,
+  "customerName": "Πελάτης 4",
+  "orderDate": "2024-08-21",
+  "status": "Ολοκληρωμένη",
+  "amount": "150.00€",
+  "shippingCompany": "Courier4U",
+  "voucherNumber": "V654321",
+  "address": "Οδός 3, Αριθμός 4",
+  "area": "Περιοχή Β",
+  "zip": "23456",
+  "phone": "2102345678",
+  "isCODConfirmed": false
+},
+{
+  "id": 5,
+  "customerName": "Πελάτης 4",
+  "orderDate": "2024-08-21",
+  "status": "Ολοκληρωμένη",
+  "amount": "150.00€",
+  "shippingCompany": "Courier4U",
+  "voucherNumber": "V654321",
+  "address": "Οδός 3, Αριθμός 4",
+  "area": "Περιοχή Β",
+  "zip": "23456",
+  "phone": "2102345678",
+  "isCODConfirmed": false
+}
+
 
 ]
