@@ -1,0 +1,17 @@
+/* Woo styles.css */
+
+.table-striped tbody tr {
+    transition: background-color 0.3s;
+}
+
+.table-striped tbody tr.payment-card {
+    background-color: #e0f7fa; /* Απαλό γαλάζιο */
+}
+
+.table-striped tbody tr.payment-cod {
+    background-color: #f5f5f5; /* Ελαφρύ γκρι */
+}
+
+.table-striped tbody tr.payment-paypal {
+    background-color: #f3e5f5; /* Ελαφρύ μωβ */
+}

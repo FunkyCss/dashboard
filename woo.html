@@ -3,76 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WooCommerce Orders Dashboard</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css"> <!-- Προσθέστε το CSS αρχείο σας εδώ -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="assets/woo.js" defer></script>
+    <title>WooCommerce Orders</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Το δικό σου CSS -->
+    <link rel="stylesheet" href="woo-styles.css"> <!-- Το δικό σου CSS -->
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">WooCommerce Dashboard</a>
-        </nav>
-    </header>
-    
-    <main class="container mt-4">
-        <section id="filter-section">
-            <h2>Φίλτρα</h2>
-            <form id="filter-form" class="form-inline mb-4">
-                <div class="form-group mr-2">
-                    <label for="customer-name" class="sr-only">Όνομα Πελάτη:</label>
-                    <input type="text" class="form-control" id="customer-name" placeholder="Όνομα Πελάτη">
-                </div>
-                <div class="form-group mr-2">
-                    <label for="date" class="sr-only">Ημερομηνία:</label>
-                    <input type="date" class="form-control" id="date">
-                </div>
-                <div class="form-group mr-2">
-                    <label for="city" class="sr-only">Πόλη:</label>
-                    <input type="text" class="form-control" id="city" placeholder="Πόλη">
-                </div>
-                <div class="form-group mr-2">
-                    <label for="amount" class="sr-only">Ποσό:</label>
-                    <input type="number" class="form-control" id="amount" placeholder="Ποσό">
-                </div>
-                <button type="button" class="btn btn-primary" id="filter-button">Φιλτράρισμα</button>
-            </form>
-        </section>
-        
-        <section id="orders-section">
-            <h2>Παραγγελίες</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Όνομα Πελάτη</th>
-                        <th>Ημερομηνία</th>
-                        <th>Πόλη</th>
-                        <th>Ποσό</th>
-                        <th>Ενέργειες</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-table-body">
-                    <!-- Παραγγελίες θα προστεθούν εδώ με JavaScript -->
-                </tbody>
-            </table>
-        </section>
-    </main>
-    
-    <!-- Modal for Order Details -->
-    <div class="modal fade" id="order-details-modal" tabindex="-1" role="dialog" aria-labelledby="order-details-label" aria-hidden="true">
+    <div class="container mt-4">
+        <h1 class="mb-4">WooCommerce Orders</h1>
+        <div class="mb-3">
+            <input type="text" id="searchCustomer" class="form-control" placeholder="Αναζήτηση Πελάτη">
+        </div>
+        <div class="mb-3">
+            <input type="date" id="orderDateFilter" class="form-control">
+        </div>
+        <div class="mb-3">
+            <input type="text" id="productFilter" class="form-control" placeholder="Φίλτρο Προϊόντων">
+        </div>
+        <div class="mb-3">
+            <select id="paymentMethodFilter" class="form-control">
+                <option value="">Μέθοδος Πληρωμής</option>
+                <option value="Αντικαταβολή">Αντικαταβολή</option>
+                <option value="Κάρτα">Κάρτα</option>
+                <option value="Paypal">Paypal</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <input type="checkbox" id="bulkCheckbox"> Επιλογή Όλων
+            <button id="exportButton" class="btn btn-primary ml-2">Δημιουργία EXCEL</button>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th> <!-- Bulk checkbox column -->
+                    <th>ID</th>
+                    <th>Όνομα Πελάτη</th>
+                    <th>Ημερομηνία</th>
+                    <th>Κατάσταση</th>
+                    <th>Ποσό</th>
+                    <th>Προϊόντα</th>
+                    <th>Μέθοδος Πληρωμής</th>
+                    <th>Ενέργειες</th>
+                </tr>
+            </thead>
+            <tbody id="orders-table-body">
+                <!-- Παραγγελίες θα προστεθούν εδώ με JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal για λεπτομέρειες παραγγελίας -->
+    <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="order-details-label">Λεπτομέρειες Παραγγελίας</h5>
+                    <h5 class="modal-title" id="orderModalLabel">Λεπτομέρειες Παραγγελίας</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" id="order-details-content">
-                    <!-- Λεπτομέρειες παραγγελίας θα προστεθούν εδώ με JavaScript -->
+                <div class="modal-body">
+                    <p><strong>Όνομα Πελάτη:</strong> <span id="modalCustomerName"></span></p>
+                    <p><strong>Διεύθυνση:</strong> <span id="modalAddress"></span></p>
+                    <p><strong>Περιοχή:</strong> <span id="modalArea"></span></p>
+                    <p><strong>Ταχυδρομικός Κώδικας:</strong> <span id="modalZip"></span></p>
+                    <p><strong>Τηλέφωνο:</strong> <span id="modalPhone"></span></p>
+                    <p><strong>Ποσό:</strong> <span id="modalAmount"></span></p>
+                    <p><strong>Μέθοδος Πληρωμής:</strong> <span id="modalPaymentMethod"></span></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Κλείσιμο</button>
@@ -80,5 +77,10 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="assets/order-request.js"></script>
 </body>
 </html>

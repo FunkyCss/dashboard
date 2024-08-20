@@ -1,0 +1,41 @@
+[
+    {
+        "id": "1",
+        "customerName": "Γιώργος Παπαδόπουλος",
+        "orderDate": "2024-08-15",
+        "status": "Ολοκληρωμένη",
+        "amount": "150.00",
+        "products": ["Cavi Shaper", "Microglow"],
+        "address": "Οδός 1, Αθήνα",
+        "area": "Κέντρο",
+        "zip": "12345",
+        "phone": "1234567890",
+        "isCODConfirmed": false
+    },
+    {
+        "id": "2",
+        "customerName": "Μαρία Ιωαννίδου",
+        "orderDate": "2024-08-16",
+        "status": "Εκκρεμής",
+        "amount": "200.00",
+        "products": ["Lipolysis"],
+        "address": "Οδός 2, Θεσσαλονίκη",
+        "area": "Κέντρο",
+        "zip": "54321",
+        "phone": "0987654321",
+        "isCODConfirmed": false
+    },
+    {
+        "id": "3",
+        "customerName": "Δημήτρης Κωνσταντίνου",
+        "orderDate": "2024-08-17",
+        "status": "Επιστροφή",
+        "amount": "50.00",
+        "products": ["Microglow"],
+        "address": "Οδός 3, Πάτρα",
+        "area": "Κέντρο",
+        "zip": "67890",
+        "phone": "1122334455",
+        "isCODConfirmed": true
+    }
+]
