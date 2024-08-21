@@ -5,13 +5,11 @@ import { loadTableData } from '../helpers/tableRenderer.js';
 import { updateModalDetails } from '../helpers/modalService.js';
 import { applyFilters, applySearch } from '../helpers/filters.js';
 
-document.addEventListener('DOMContentLoaded', async function () {
+document.addEventListener('DOMContentLoaded', function() {
     const searchBox = document.querySelector('.search-box input');
     const searchCustomer = document.getElementById('searchCustomer');
-    const orderDateFilter = document.getElementById('orderDateFilter');
     const productFilter = document.getElementById('productFilter');
     const paymentMethodFilter = document.getElementById('paymentMethodFilter');
-    const bulkCheckbox = document.getElementById('bulkCheckbox');
     const exportButton = document.getElementById('exportButton');
     const tableBody = document.querySelector('#orders-table-body');
     const noResultsMessage = document.getElementById('noResultsMessage');
@@ -19,89 +17,97 @@ document.addEventListener('DOMContentLoaded', async function () {
     let allData = [];
     let filteredData = [];
 
-    try {
-        allData = await fetchData('/data/woo-orders.json');
-        filteredData = allData;
-        loadTableData(filteredData); // Ξεκινά με όλα τα δεδομένα
-    } catch (error) {
-        console.error('Failed to initialize data:', error);
+    // Load data initially
+    fetchData('data/woo-orders.json');
+
+    function fetchData(url) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                allData = data;
+                filteredData = data;
+                loadTableData(data);
+            })
+            .catch(error => console.error('Error loading data:', error));
     }
 
     function loadTableData(data) {
-        const fragment = document.createDocumentFragment(); // Create a fragment to avoid multiple DOM manipulations
-
+        tableBody.innerHTML = ''; // Καθαρίζει τον πίνακα
+    
         if (data.length === 0) {
             noResultsMessage.style.display = 'block';
         } else {
             noResultsMessage.style.display = 'none';
         }
-
-        data.forEach(item => {
-            const row = document.createElement('tr');
+    
+        data.forEach((item, index) => {
             const rowClass = item.paymentMethod === 'Κάρτα' ? 'payment-card' :
                             item.paymentMethod === 'Αντικαταβολή' ? 'payment-cod' :
                             item.paymentMethod === 'Paypal' ? 'payment-paypal' : '';
-            row.className = rowClass;
-
-            row.innerHTML = `
-                <td><input type="checkbox" class="bulk-select" data-id="${item.orderNumber}"></td>
+    
+            let row = `<tr class="${rowClass}">
+                <td>${index + 1}</td> <!-- Προσθέτουμε αριθμό σειράς -->
                 <td>${item.orderNumber}</td>
                 <td>${item.customerName}</td>
                 <td>${item.orderDate}</td>
                 <td>${item.amount}</td>
                 <td>${item.products.join(', ')}</td>
                 <td>${item.paymentMethod}</td>
-                <td><button class="btn btn-primary btn-sm view-details" data-id="${item.orderNumber}">Προβολή</button></td>
-            `;
-
-            fragment.appendChild(row);
+                <td>
+                    <button class="btn btn-primary btn-sm view-details" data-id="${item.orderNumber}">Προβολή</button>
+                </td>
+            </tr>`;
+            tableBody.insertAdjacentHTML('beforeend', row);
         });
-
-        tableBody.innerHTML = ''; // Clear the table
-        tableBody.appendChild(fragment); // Append the fragment to the DOM
-
-        // Event delegation for view details buttons
-        tableBody.addEventListener('click', function (event) {
-            if (event.target.classList.contains('view-details')) {
-                const id = event.target.getAttribute('data-id');
+    
+        // Προσθέτουμε ακροατές για τα κουμπιά "Προβολή"
+        document.querySelectorAll('.view-details').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
                 const order = allData.find(order => order.orderNumber == id);
+
                 if (order) {
                     updateModalDetails(order);
                     $('#orderModal').modal('show');
                 }
-            }
-        });
-
-        // Event delegation for bulk checkbox selection
-        if (bulkCheckbox) {
-            bulkCheckbox.addEventListener('change', function () {
-                document.querySelectorAll('.bulk-select').forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
             });
-        }
+        });
+    }
+
+    function updateModalDetails(order) {
+        document.getElementById('modalCustomerName').innerText = order.customerName || 'Δεν διατίθεται';
+        document.getElementById('modalAddress').innerText = order.address || 'Δεν διατίθεται';
+        document.getElementById('modalArea').innerText = order.area || 'Δεν διατίθεται';
+        document.getElementById('modalZip').innerText = order.zip || 'Δεν διατίθεται';
+        document.getElementById('modalPhone').innerText = order.phone || 'Δεν διατίθεται';
+        document.getElementById('modalEmail').innerText = order.email || 'Δεν διατίθεται'; // Νέο πεδίο
+        document.getElementById('modalComments').innerText = order.comments || 'Δεν διατίθεται'; // Νέο πεδίο
+        document.getElementById('modalPaymentMethod').innerText = order.paymentMethod || 'Δεν διατίθεται';
     }
 
     function applyFilters() {
-        filteredData = allData;
-
+        filteredData = allData;  // Αρχικά αναθέτουμε όλα τα δεδομένα
+        
         const searchValue = searchCustomer ? searchCustomer.value.toLowerCase() : '';
-        const dateValue = orderDateFilter ? orderDateFilter.value : '';
         const productValue = productFilter ? productFilter.value.toLowerCase() : '';
         const paymentMethodValue = paymentMethodFilter ? paymentMethodFilter.value : '';
 
+        // Φιλτράρισμα ανά πελάτη
         if (searchValue) {
             filteredData = filteredData.filter(item => item.customerName.toLowerCase().includes(searchValue));
         }
 
-        if (dateValue) {
-            filteredData = filteredData.filter(item => item.orderDate === dateValue);
-        }
-
+        // Φιλτράρισμα ανά προϊόν
         if (productValue) {
             filteredData = filteredData.filter(item => item.products.some(product => product.toLowerCase().includes(productValue)));
         }
 
+        // Φιλτράρισμα ανά μέθοδο πληρωμής
         if (paymentMethodValue) {
             filteredData = filteredData.filter(item => item.paymentMethod === paymentMethodValue);
         }
@@ -123,37 +129,24 @@ document.addEventListener('DOMContentLoaded', async function () {
         loadTableData(filteredData);
     }
 
-    // Debounce function to optimize input events
-    function debounce(fn, delay) {
-        let timeoutID;
-        return function (...args) {
-            clearTimeout(timeoutID);
-            timeoutID = setTimeout(() => fn.apply(this, args), delay);
-        };
-    }
-
-    // Attach event listeners for search and filters, with debouncing
+    // Event listeners για τα φίλτρα και την αναζήτηση
     if (searchCustomer) {
-        searchCustomer.addEventListener('input', debounce(applyFilters, 300));
-    }
-
-    if (orderDateFilter) {
-        orderDateFilter.addEventListener('change', debounce(applyFilters, 300));
+        searchCustomer.addEventListener('input', applyFilters);
     }
 
     if (productFilter) {
-        productFilter.addEventListener('input', debounce(applyFilters, 300));
+        productFilter.addEventListener('input', applyFilters);
     }
 
     if (paymentMethodFilter) {
-        paymentMethodFilter.addEventListener('change', debounce(applyFilters, 300));
+        paymentMethodFilter.addEventListener('change', applyFilters);
     }
 
     if (searchBox) {
-        searchBox.addEventListener('input', debounce(applySearch, 300));
+        searchBox.addEventListener('input', applySearch);
     }
 
-
+    // Φόρτωση αρχικών δεδομένων
     // Event delegation for view details buttons
     tableBody.addEventListener('click', function (event) {
         if (event.target.classList.contains('view-details')) {
