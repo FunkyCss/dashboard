@@ -5,13 +5,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const paymentMethodFilter = document.getElementById('paymentMethodFilter');
     const bulkCheckbox = document.getElementById('bulkCheckbox');
     const exportButton = document.getElementById('exportButton');
+    const noResultsMessage = document.getElementById('noResultsMessage');
     
     let allData = [];
-    let dataType = 'orders'; // Είδος δεδομένων, ξεκινάμε με orders
 
     function loadTableData(data, tableBodySelector) {
         let tableBody = document.querySelector(tableBodySelector);
         tableBody.innerHTML = ''; // Καθαρίζει τον πίνακα
+
+        if (data.length === 0) {
+            noResultsMessage.style.display = 'block';
+        } else {
+            noResultsMessage.style.display = 'none';
+        }
 
         data.forEach(item => {
             const rowClass = item.paymentMethod === 'Κάρτα' ? 'payment-card' :
@@ -19,15 +25,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             item.paymentMethod === 'Paypal' ? 'payment-paypal' : '';
 
             let row = `<tr class="${rowClass}">
-                <td><input type="checkbox" class="bulk-select" data-id="${item.id}"></td>
-                <td>${item.id}</td>
+                <td><input type="checkbox" class="bulk-select" data-id="${item.orderNumber}"></td>
+                <td>${item.orderNumber}</td>
                 <td>${item.customerName}</td>
                 <td>${item.orderDate}</td>
                 <td>${item.amount}</td>
                 <td>${item.products.join(', ')}</td>
                 <td>${item.paymentMethod}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm view-details" data-id="${item.id}">Προβολή</button>
+                    <button class="btn btn-primary btn-sm view-details" data-id="${item.orderNumber}">Προβολή</button>
                 </td>
             </tr>`;
             tableBody.insertAdjacentHTML('beforeend', row);
@@ -36,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.view-details').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
-                const order = allData.find(order => order.id == id);
+                const order = allData.find(order => order.orderNumber == id);
 
                 if (order) {
                     updateModalDetails(order);
@@ -90,27 +96,31 @@ document.addEventListener('DOMContentLoaded', function() {
             filteredData = filteredData.filter(item => item.products.some(product => product.toLowerCase().includes(productValue)));
         }
 
-        // Διορθωμένο φίλτρο πληρωμής
         if (paymentMethodValue) {
             filteredData = filteredData.filter(item => item.paymentMethod === paymentMethodValue);
         }
 
-        loadTableData(filteredData, 'table tbody');
+        loadTableData(filteredData, '#orders-table-body');
     }
 
-    function fetchData(url, tableBodySelector, type) {
+    function fetchData(url, tableBodySelector) {
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 allData = data;
-                dataType = type;
                 loadTableData(data, tableBodySelector);
             })
             .catch(error => console.error('Σφάλμα φόρτωσης δεδομένων:', error));
     }
+    
+    if (window.location.pathname.includes('index.html')) {
+        fetchData('data/woo-orders.json', '#orders-table-body');
 
-    if (window.location.pathname.includes('woo.html')) {
-        fetchData('data/woo-orders.json', 'table tbody', 'orders');
     }
 
     if (searchCustomer) {
