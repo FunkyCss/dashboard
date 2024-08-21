@@ -1,4 +1,11 @@
-document.addEventListener('DOMContentLoaded', function() {
+// main.js
+import { debounce } from '../helpers/utils.js';
+import { fetchData } from '../helpers/dataService.js';
+import { loadTableData } from '../helpers/tableRenderer.js';
+import { updateModalDetails } from '../helpers/modalService.js';
+import { applyFilters, applySearch } from '../helpers/filters.js';
+
+document.addEventListener('DOMContentLoaded', async function () {
     const searchBox = document.querySelector('.search-box input');
     const searchCustomer = document.getElementById('searchCustomer');
     const orderDateFilter = document.getElementById('orderDateFilter');
@@ -12,27 +19,16 @@ document.addEventListener('DOMContentLoaded', function() {
     let allData = [];
     let filteredData = [];
 
-    // Load data initially
-    fetchData('data/woo-orders.json');
-
-    function fetchData(url) {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                allData = data;
-                filteredData = data;
-                loadTableData(data);
-            })
-            .catch(error => console.error('Error loading data:', error));
+    try {
+        allData = await fetchData('/data/woo-orders.json');
+        filteredData = allData;
+        loadTableData(filteredData); // Ξεκινά με όλα τα δεδομένα
+    } catch (error) {
+        console.error('Failed to initialize data:', error);
     }
 
     function loadTableData(data) {
-        tableBody.innerHTML = ''; // Clear the table
+        const fragment = document.createDocumentFragment(); // Create a fragment to avoid multiple DOM manipulations
 
         if (data.length === 0) {
             noResultsMessage.style.display = 'block';
@@ -41,11 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         data.forEach(item => {
+            const row = document.createElement('tr');
             const rowClass = item.paymentMethod === 'Κάρτα' ? 'payment-card' :
                             item.paymentMethod === 'Αντικαταβολή' ? 'payment-cod' :
                             item.paymentMethod === 'Paypal' ? 'payment-paypal' : '';
+            row.className = rowClass;
 
-            let row = `<tr class="${rowClass}">
+            row.innerHTML = `
                 <td><input type="checkbox" class="bulk-select" data-id="${item.orderNumber}"></td>
                 <td>${item.orderNumber}</td>
                 <td>${item.customerName}</td>
@@ -53,48 +51,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${item.amount}</td>
                 <td>${item.products.join(', ')}</td>
                 <td>${item.paymentMethod}</td>
-                <td>
-                    <button class="btn btn-primary btn-sm view-details" data-id="${item.orderNumber}">Προβολή</button>
-                </td>
-            </tr>`;
-            tableBody.insertAdjacentHTML('beforeend', row);
+                <td><button class="btn btn-primary btn-sm view-details" data-id="${item.orderNumber}">Προβολή</button></td>
+            `;
+
+            fragment.appendChild(row);
         });
 
-        document.querySelectorAll('.view-details').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const order = allData.find(order => order.orderNumber == id);
+        tableBody.innerHTML = ''; // Clear the table
+        tableBody.appendChild(fragment); // Append the fragment to the DOM
 
+        // Event delegation for view details buttons
+        tableBody.addEventListener('click', function (event) {
+            if (event.target.classList.contains('view-details')) {
+                const id = event.target.getAttribute('data-id');
+                const order = allData.find(order => order.orderNumber == id);
                 if (order) {
                     updateModalDetails(order);
                     $('#orderModal').modal('show');
                 }
-            });
+            }
         });
 
+        // Event delegation for bulk checkbox selection
         if (bulkCheckbox) {
-            bulkCheckbox.addEventListener('change', function() {
+            bulkCheckbox.addEventListener('change', function () {
                 document.querySelectorAll('.bulk-select').forEach(checkbox => {
                     checkbox.checked = this.checked;
                 });
             });
         }
-
-        if (exportButton) {
-            exportButton.addEventListener('click', function() {
-                alert('Δημιουργία EXCEL (Δεν είναι έτοιμο ακόμη)');
-            });
-        }
-    }
-
-    function updateModalDetails(order) {
-        document.getElementById('modalCustomerName').innerText = order.customerName || 'Δεν διατίθεται';
-        document.getElementById('modalAddress').innerText = order.address || 'Δεν διατίθεται';
-        document.getElementById('modalArea').innerText = order.area || 'Δεν διατίθεται';
-        document.getElementById('modalZip').innerText = order.zip || 'Δεν διατίθεται';
-        document.getElementById('modalPhone').innerText = order.phone || 'Δεν διατίθεται';
-        document.getElementById('modalAmount').innerText = order.amount || 'Δεν διατίθεται';
-        document.getElementById('modalPaymentMethod').innerText = order.paymentMethod || 'Δεν διατίθεται';
     }
 
     function applyFilters() {
@@ -138,24 +123,55 @@ document.addEventListener('DOMContentLoaded', function() {
         loadTableData(filteredData);
     }
 
-    // Event listeners for filters and search box
+    // Debounce function to optimize input events
+    function debounce(fn, delay) {
+        let timeoutID;
+        return function (...args) {
+            clearTimeout(timeoutID);
+            timeoutID = setTimeout(() => fn.apply(this, args), delay);
+        };
+    }
+
+    // Attach event listeners for search and filters, with debouncing
     if (searchCustomer) {
-        searchCustomer.addEventListener('input', applyFilters);
+        searchCustomer.addEventListener('input', debounce(applyFilters, 300));
     }
 
     if (orderDateFilter) {
-        orderDateFilter.addEventListener('change', applyFilters);
+        orderDateFilter.addEventListener('change', debounce(applyFilters, 300));
     }
 
     if (productFilter) {
-        productFilter.addEventListener('input', applyFilters);
+        productFilter.addEventListener('input', debounce(applyFilters, 300));
     }
 
     if (paymentMethodFilter) {
-        paymentMethodFilter.addEventListener('change', applyFilters);
+        paymentMethodFilter.addEventListener('change', debounce(applyFilters, 300));
     }
 
     if (searchBox) {
-        searchBox.addEventListener('input', applySearch);
+        searchBox.addEventListener('input', debounce(applySearch, 300));
+    }
+
+
+    // Event delegation for view details buttons
+    tableBody.addEventListener('click', function (event) {
+        if (event.target.classList.contains('view-details')) {
+            const id = event.target.getAttribute('data-id');
+            const order = allData.find(order => order.orderNumber == id);
+            if (order) {
+                updateModalDetails(order);
+                $('#orderModal').modal('show');
+            }
+        }
+    });
+
+    // Event delegation for bulk checkbox selection
+    if (bulkCheckbox) {
+        bulkCheckbox.addEventListener('change', function () {
+            document.querySelectorAll('.bulk-select').forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
     }
 });
