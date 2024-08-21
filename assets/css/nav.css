@@ -1,3 +1,17 @@
+/* Root Variables */
+:root {
+    /* Color Scheme */
+    --primary-color: #0E4BF1;
+    --panel-color: #FFF;
+    --text-color: #000;
+    --black-light-color: #707070;
+    --border-color: #e6e5e5;
+    --toggle-color: #DDD;
+    --box1-color: #4DA3FF;
+    --box2-color: #FFE6AC;
+    --box3-color: #E7D1FC;
+}
+
 /* Sidebar styling */
 #sidebar {
     width: 250px; /* Πλάτος sidebar */
@@ -71,3 +85,4 @@
         margin-top: 100px; /* Αφήνουμε χώρο για την top bar */
     }
 }
+

@@ -1,0 +1,25 @@
+/* Filter Container */
+.filter-container {
+    display: flex;
+    flex-wrap: wrap; /* Κάνει τα φίλτρα να πηγαίνουν σε νέο row αν χρειαστεί */
+    gap: 15px; /* Απόσταση μεταξύ των φίλτρων */
+    padding: 10px;
+    background-color: var(--box2-color); /* Απαλό χρώμα φόντου για το container */
+    border-radius: 5px; /* Γωνίες για να φαίνεται πιο μαλακό */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ελαφρύ σκίασμα για βάθος */
+    margin-bottom: 20px; /* Απόσταση κάτω από το container */
+}
+
+/* Filter Items */
+.filter-item {
+    flex: 1; /* Επιτρέπει στα φίλτρα να μεγαλώνουν εξίσου */
+    min-width: 150px; /* Ελάχιστο πλάτος για κάθε φίλτρο */
+}
+
+/* Form Controls */
+.form-control {
+    border-radius: 0.25rem; /* Μαλακές γωνίες για τα πεδία εισόδου */
+    padding: 0.5rem; /* Μείωση padding για συμπαγέστερη εμφάνιση */
+    font-size: 0.875rem; /* Ελαφρώς μικρότερη γραμματοσειρά για καλύτερη εμφάνιση */
+    height: auto; /* Αποφυγή υπερβολικού ύψους */
+}

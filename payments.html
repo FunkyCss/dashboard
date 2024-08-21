@@ -3,77 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Πληρωμές</title>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <title>WooCommerce Orders</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css"> 
+    <link rel="stylesheet" href="/assets/css/woo-styles.css"> 
+    <link rel="stylesheet" href="/assets/css/nav.css"> 
+    <link rel="stylesheet" href="/assets/css/filter.css"> 
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="#">Διαχειριστικό Σύστημα</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.html">Αρχική Σελίδα</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="orders.html">Παραγγελίες</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="payments.html">Πληρωμές</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="returns.html">Επιστροφές</a>
-                </li>
-            </ul>
-        </div>
+
+    <!-- Sidebar -->
+    <nav id="sidebar" class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
+            <img src="/assets/img/logo.png" alt="jerrycherry" width="120" height="" class="rounded-circle">
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link active" aria-current="page">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>Παραγγελίες</span>
+                </a>
+            </li>
+            <li>
+                <a href="payments.html" class="nav-link">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span>Πληρωμές</span>
+                </a>
+            </li>
+            <li>
+                <a href="returns.html" class="nav-link">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Επιστροφές</span>
+                </a>
+            </li>
+        </ul>
+        <hr>
+   
     </nav>
 
-    <div class="container mt-5 pt-4">
-        <h2>Πληρωμές</h2>
-        <!-- Φίλτρα πληρωμών -->
-     <!-- Φίλτρα πληρωμών με σωστό εικαστικό -->
-        <div class="mb-3">
-            <label>Φίλτρα:</label>
-            <input type="text" placeholder="Αναζήτηση πελάτη..." class="form-control mb-2" id="searchCustomer">
-            <select class="form-control mb-2" id="orderStatusFilter">
-                <option>Κατάσταση Πληρωμής</option> <!-- Προσαρμόστε ανάλογα -->
-                <option>Σε αναμονή</option>
-                <option>Ολοκληρωμένη</option>
-                <option>Ακυρωμένη</option>
-            </select>
-            <input type="date" class="form-control" id="orderDateFilter">
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <h1 class="mb-4">WooCommerce Orders</h1>
+
+        <!-- Search and Filter Container -->
+        <div class="filter-container mb-3">
+            <div class="filter-item">
+                <input type="text" id="searchCustomer" class="form-control" placeholder="Αναζήτηση Πελάτη">
+            </div>
+            <div class="filter-item">
+                <input type="date" id="orderDateFilter" class="form-control">
+            </div>
+            <div class="filter-item">
+                <input type="text" id="productFilter" class="form-control" placeholder="Φίλτρο Προϊόντων">
+            </div>
+            <div class="filter-item">
+                <select id="paymentMethodFilter" class="form-control">
+                    <option value="">Μέθοδος Πληρωμής</option>
+                    <option value="Αντικαταβολή">Αντικαταβολή</option>
+                    <option value="Κάρτα">Κάρτα</option>
+                    <option value="Paypal">Paypal</option>
+                </select>
+            </div>
         </div>
 
-        
-        <!-- Πίνακας πληρωμών -->
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Όνομα Πελάτη</th>
-                        <th>Ημερομηνία Πληρωμής</th>
-                        <th>Κατάσταση</th>
-                        <th>Ποσό</th>
-                        <th>Ενέργειες</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Δυναμικό περιεχόμενο θα προστεθεί με JavaScript -->
-                </tbody>
-            </table>
+        <!-- Bulk Checkbox and Export Button -->
+        <div class="mb-3">
+            <input type="checkbox" id="bulkCheckbox"> Επιλογή Όλων
+            <button id="exportButton" class="btn btn-primary ml-2">Δημιουργία EXCEL</button>
+        </div>
+
+        <!-- Orders Table -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th> <!-- Bulk checkbox column -->
+                    <th>Αρ. Παραγγελίας</th>
+                    <th>Όνομα</th>
+                    <th>Ημ/νία</th>
+                    <th>Ποσό</th>
+                    <th>Προϊόντα</th>
+                    <th>Πληρωμή</th>
+                    <th>Ενέργειες</th>
+                </tr>
+            </thead>
+            <tbody id="orders-table-body">
+                <!-- Παραγγελίες θα προστεθούν εδώ με JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- No results message -->
+        <p id="noResultsMessage" class="text-danger" style="display:none;">Δεν βρέθηκαν αποτελέσματα για τα επιλεγμένα φίλτρα.</p>
+    </div>
+
+    <!-- Modal για λεπτομέρειες παραγγελίας -->
+    <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalLabel">Λεπτομέρειες Παραγγελίας</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Όνομα Πελάτη:</strong> <span id="modalCustomerName"></span></p>
+                    <p><strong>Διεύθυνση:</strong> <span id="modalAddress"></span></p>
+                    <p><strong>Περιοχή:</strong> <span id="modalArea"></span></p>
+                    <p><strong>Ταχυδρομικός Κώδικας:</strong> <span id="modalZip"></span></p>
+                    <p><strong>Τηλέφωνο:</strong> <span id="modalPhone"></span></p>
+                    <p><strong>Ποσό:</strong> <span id="modalAmount"></span></p>
+                    <p><strong>Μέθοδος Πληρωμής:</strong> <span id="modalPaymentMethod"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Κλείσιμο</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="assets/js/script.js"></script>
+    <!-- Ενημέρωση εικονιδίου ειδοποιήσεων -->
+    <div class="top d-flex justify-content-between align-items-center p-3">
+        <i class="fa-solid fa-backward"></i>
+        <div class="search-box d-flex align-items-center">
+            <input type="text" class="form-control" placeholder="Γενική Αναζήτηση...">
+        </div>
+        <!-- Notification Icon Added -->
+        <i class="fa-solid fa-bell"></i>  <!-- Icon for notifications -->
+    </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="assets/js/woo-filters.js"></script>
+    <script src="assets/js/sheet.js"></script>
 </body>
 </html>

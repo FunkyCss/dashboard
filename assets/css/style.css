@@ -1,4 +1,14 @@
+
+/* Font Import - Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@200;300;400;500;600&display=swap');
+
+
+/* Body Styles */
 body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--panel-color); /* Λευκό φόντο για το σώμα */
+    color: var(--text-color); /* Μαύρο κείμενο */
+    transition: background-color 0.3s ease;
     padding-top: 56px; /* Διάστημα για την fixed navbar */
 }
 
@@ -15,4 +25,23 @@ body {
 }
 .container {
     max-width: 1300px; /* Μπορείτε να προσαρμόσετε αυτό το πλάτος ανάλογα με τις ανάγκες σας */
+}
+
+#exportButton {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+#exportButton:hover {
+    background-color: #0b3cc1;
+}
+
+.table {
+    font-size:13px;
 }

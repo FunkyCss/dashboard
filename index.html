@@ -6,15 +6,16 @@
     <title>WooCommerce Orders</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css"> <!-- Το δικό σου CSS -->
-    <link rel="stylesheet" href="/assets/css/woo-styles.css"> <!-- Το δικό σου CSS -->
-    <link rel="stylesheet" href="/assets/css/nav.css"> <!-- Το δικό σου CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css"> 
+    <link rel="stylesheet" href="/assets/css/woo-styles.css"> 
+    <link rel="stylesheet" href="/assets/css/nav.css"> 
+    <link rel="stylesheet" href="/assets/css/filter.css"> 
 </head>
 <body>
 
     <!-- Sidebar -->
-    <nav id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 bg-dark" style="height: 100vh;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-light text-decoration-none">
+    <nav id="sidebar" class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
             <img src="/assets/img/logo.png" alt="jerrycherry" width="120" height="" class="rounded-circle">
         </a>
         <hr>
@@ -26,13 +27,13 @@
                 </a>
             </li>
             <li>
-                <a href="payments.html" class="nav-link link-light">
+                <a href="payments.html" class="nav-link">
                     <i class="fa-solid fa-credit-card"></i>
                     <span>Πληρωμές</span>
                 </a>
             </li>
             <li>
-                <a href="returns.html" class="nav-link link-light">
+                <a href="returns.html" class="nav-link">
                     <i class="fa-solid fa-circle-info"></i>
                     <span>Επιστροφές</span>
                 </a>
@@ -46,23 +47,25 @@
     <div class="container mt-4">
         <h1 class="mb-4">WooCommerce Orders</h1>
 
-        <!-- Search and Filter Inputs -->
-        <div class="mb-3">
-            <input type="text" id="searchCustomer" class="form-control" placeholder="Αναζήτηση Πελάτη">
-        </div>
-        <div class="mb-3">
-            <input type="date" id="orderDateFilter" class="form-control">
-        </div>
-        <div class="mb-3">
-            <input type="text" id="productFilter" class="form-control" placeholder="Φίλτρο Προϊόντων">
-        </div>
-        <div class="mb-3">
-            <select id="paymentMethodFilter" class="form-control">
-                <option value="">Μέθοδος Πληρωμής</option>
-                <option value="Αντικαταβολή">Αντικαταβολή</option>
-                <option value="Κάρτα">Κάρτα</option>
-                <option value="Paypal">Paypal</option>
-            </select>
+        <!-- Search and Filter Container -->
+        <div class="filter-container mb-3">
+            <div class="filter-item">
+                <input type="text" id="searchCustomer" class="form-control" placeholder="Αναζήτηση Πελάτη">
+            </div>
+            <div class="filter-item">
+                <input type="date" id="orderDateFilter" class="form-control">
+            </div>
+            <div class="filter-item">
+                <input type="text" id="productFilter" class="form-control" placeholder="Φίλτρο Προϊόντων">
+            </div>
+            <div class="filter-item">
+                <select id="paymentMethodFilter" class="form-control">
+                    <option value="">Μέθοδος Πληρωμής</option>
+                    <option value="Αντικαταβολή">Αντικαταβολή</option>
+                    <option value="Κάρτα">Κάρτα</option>
+                    <option value="Paypal">Paypal</option>
+                </select>
+            </div>
         </div>
 
         <!-- Bulk Checkbox and Export Button -->
@@ -121,11 +124,10 @@
     </div>
 
     <!-- Ενημέρωση εικονιδίου ειδοποιήσεων -->
-    <div class="top bg-light d-flex justify-content-between align-items-center p-3">
+    <div class="top d-flex justify-content-between align-items-center p-3">
         <i class="fa-solid fa-bars sidebar-toggle"></i>
         <div class="search-box d-flex align-items-center">
-            <i class="fa-brands fa-searchengin me-2"></i>
-            <input type="text" class="form-control" placeholder="Search here...">
+            <input type="text" class="form-control" placeholder="Γενική Αναζήτηση...">
         </div>
         <!-- Notification Icon Added -->
         <i class="fa-solid fa-bell"></i>  <!-- Icon for notifications -->
@@ -134,7 +136,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="assets/js/woo-request.js"></script>
-    <script src="assets/js/search.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="assets/js/woo-filters.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script src="assets/js/sheet.js"></script>
 </body>
 </html>

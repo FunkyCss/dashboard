@@ -1,27 +1,26 @@
 [
-    {
-      "orderNumber": "12345",
-      "customerName": "Γιάννης Παπαδόπουλος",
-      "orderDate": "2024-08-21",
-      "amount": "50.00",
-      "products": ["Product 1", "Product 2"],
-      "paymentMethod": "Κάρτα",
-      "address": "Δεν διατίθεται",
-      "area": "Δεν διατίθεται",
-      "zip": "12345",
-      "phone": "6981234567"
-    },
-    {
-      "orderNumber": "67890",
-      "customerName": "Μαρία Παπαδοπούλου",
-      "orderDate": "2024-08-21",
-      "amount": "100.00",
-      "products": ["Product 3"],
-      "paymentMethod": "Αντικαταβολή",
-      "address": "Δεν διατίθεται",
-      "area": "Δεν διατίθεται",
-      "zip": "54321",
-      "phone": "6987654321"
-    }
-  ]
-  
+  {
+    "orderNumber": "12345",
+    "customerName": "Γιάννης Παπαδόπουλος",
+    "orderDate": "2024-08-21",
+    "amount": "50.00",
+    "products": ["Product 1", "Product 2"],
+    "paymentMethod": "Κάρτα",
+    "address": "Δεν διατίθεται",
+    "area": "Δεν διατίθεται",
+    "zip": "12345",
+    "phone": "6981234567"
+  },
+  {
+    "orderNumber": "67890",
+    "customerName": "Μαρία Παπαδοπούλου",
+    "orderDate": "2024-08-21",
+    "amount": "100.00",
+    "products": ["Product 3"],
+    "paymentMethod": "Αντικαταβολή",
+    "address": "Δεν διατίθεται",
+    "area": "Δεν διατίθεται",
+    "zip": "54321",
+    "phone": "6987654321"
+  }
+]

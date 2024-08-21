@@ -1,12 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchBox = document.querySelector('.search-box input');
+    const searchCustomer = document.getElementById('searchCustomer');
+    const orderDateFilter = document.getElementById('orderDateFilter');
+    const productFilter = document.getElementById('productFilter');
+    const paymentMethodFilter = document.getElementById('paymentMethodFilter');
+    const bulkCheckbox = document.getElementById('bulkCheckbox');
+    const exportButton = document.getElementById('exportButton');
     const tableBody = document.querySelector('#orders-table-body');
     const noResultsMessage = document.getElementById('noResultsMessage');
-    
+
     let allData = [];
     let filteredData = [];
 
-    // Φόρτωσε τα δεδομένα αρχικά
+    // Load data initially
     fetchData('data/woo-orders.json');
 
     function fetchData(url) {
@@ -22,11 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 filteredData = data;
                 loadTableData(data);
             })
-            .catch(error => console.error('Σφάλμα φόρτωσης δεδομένων:', error));
+            .catch(error => console.error('Error loading data:', error));
     }
 
     function loadTableData(data) {
-        tableBody.innerHTML = ''; // Καθαρίζει τον πίνακα
+        tableBody.innerHTML = ''; // Clear the table
 
         if (data.length === 0) {
             noResultsMessage.style.display = 'block';
@@ -65,6 +71,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        if (bulkCheckbox) {
+            bulkCheckbox.addEventListener('change', function() {
+                document.querySelectorAll('.bulk-select').forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+            });
+        }
+
+        if (exportButton) {
+            exportButton.addEventListener('click', function() {
+                alert('Δημιουργία EXCEL (Δεν είναι έτοιμο ακόμη)');
+            });
+        }
     }
 
     function updateModalDetails(order) {
@@ -77,8 +97,35 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('modalPaymentMethod').innerText = order.paymentMethod || 'Δεν διατίθεται';
     }
 
+    function applyFilters() {
+        filteredData = allData;
+
+        const searchValue = searchCustomer ? searchCustomer.value.toLowerCase() : '';
+        const dateValue = orderDateFilter ? orderDateFilter.value : '';
+        const productValue = productFilter ? productFilter.value.toLowerCase() : '';
+        const paymentMethodValue = paymentMethodFilter ? paymentMethodFilter.value : '';
+
+        if (searchValue) {
+            filteredData = filteredData.filter(item => item.customerName.toLowerCase().includes(searchValue));
+        }
+
+        if (dateValue) {
+            filteredData = filteredData.filter(item => item.orderDate === dateValue);
+        }
+
+        if (productValue) {
+            filteredData = filteredData.filter(item => item.products.some(product => product.toLowerCase().includes(productValue)));
+        }
+
+        if (paymentMethodValue) {
+            filteredData = filteredData.filter(item => item.paymentMethod === paymentMethodValue);
+        }
+
+        loadTableData(filteredData);
+    }
+
     function applySearch() {
-        const searchValue = searchBox.value.toLowerCase();
+        const searchValue = searchBox ? searchBox.value.toLowerCase() : '';
 
         filteredData = allData.filter(item => {
             return item.orderNumber.toString().includes(searchValue) ||
@@ -91,7 +138,23 @@ document.addEventListener('DOMContentLoaded', function() {
         loadTableData(filteredData);
     }
 
-    // Πρόσθεσε τον ακροατή για το πεδίο αναζήτησης
+    // Event listeners for filters and search box
+    if (searchCustomer) {
+        searchCustomer.addEventListener('input', applyFilters);
+    }
+
+    if (orderDateFilter) {
+        orderDateFilter.addEventListener('change', applyFilters);
+    }
+
+    if (productFilter) {
+        productFilter.addEventListener('input', applyFilters);
+    }
+
+    if (paymentMethodFilter) {
+        paymentMethodFilter.addEventListener('change', applyFilters);
+    }
+
     if (searchBox) {
         searchBox.addEventListener('input', applySearch);
     }
