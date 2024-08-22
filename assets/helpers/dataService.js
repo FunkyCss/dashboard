@@ -1,15 +1,28 @@
-// dataService.js
-export async function fetchData(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.statusText}`);
+// dataServices.js
+export async function loadInitialData(fuseInstance, initializeFuseInstance, loadTableData) {
+    const storedData = localStorage.getItem('ordersData');
+    const storedTimestamp = localStorage.getItem('ordersDataTimestamp');
+    const now = new Date().getTime();
+
+    let allData = [];
+
+    if (storedData && storedTimestamp && (now - storedTimestamp < 24 * 60 * 60 * 1000)) {
+        allData = JSON.parse(storedData);
+        initializeFuseInstance(allData);
+        loadTableData(allData);
+    } else {
+        try {
+            const response = await fetch('data/woo-orders.json');
+            if (!response.ok) throw new Error('Network response was not ok');
+            allData = await response.json();
+            localStorage.setItem('ordersData', JSON.stringify(allData));
+            localStorage.setItem('ordersDataTimestamp', now.toString());
+            initializeFuseInstance(allData);
+            loadTableData(allData);
+        } catch (error) {
+            console.error('Failed to load initial data:', error);
         }
-        const data = await response.json();
-        console.log('Data loaded successfully:', data); // For debugging
-        return data;
-    } catch (error) {
-        console.error('Error loading data:', error);
-        return []; // Returns an empty array in case of an error
     }
+
+    return allData;
 }

@@ -1,10 +1,9 @@
-// main.js
-import { fetchData } from '../helpers/dataService.js';
-import { loadTableData } from '../helpers/tableRenderer.js';
 import { applyFilters, applySearch } from '../helpers/filters.js';
+import { loadTableData } from '../helpers/tableRenderer.js';
+import { updateModalDetails } from '../helpers/modalService.js';
+import { debounce } from '../helpers/utils.js';
 
-document.addEventListener('DOMContentLoaded', function() {
-    const searchBox = document.querySelector('.search-box input');
+document.addEventListener('DOMContentLoaded', async () => {
     const searchCustomer = document.getElementById('searchCustomer');
     const productFilter = document.getElementById('productFilter');
     const paymentMethodFilter = document.getElementById('paymentMethodFilter');
@@ -12,68 +11,124 @@ document.addEventListener('DOMContentLoaded', function() {
     const refreshButton = document.getElementById('refreshButton');
     const tableBody = document.querySelector('#orders-table-body');
     const noResultsMessage = document.getElementById('noResultsMessage');
+    const modalElement = document.getElementById('orderModal');
     const bulkCheckbox = document.getElementById('bulkCheckbox');
+    const modal = new bootstrap.Modal(modalElement);
+
+    if (!tableBody) {
+        console.error('Table body element is not found');
+        return;
+    }
 
     let allData = [];
     let filteredData = [];
-    let dataLoaded = false; // Flag for data loading status
-    const localStorageKey = 'ordersData';
-    const dataTimestampKey = 'ordersDataTimestamp';
-    const dataExpirationTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    let fuse;
+
+    function initializeFuse() {
+        const options = {
+            includeScore: true,
+            keys: ['orderNumber', 'customerName', 'products', 'amount', 'paymentMethod']
+        };
+        fuse = new Fuse(allData, options);
+    }
 
     async function loadInitialData() {
-        const storedData = localStorage.getItem(localStorageKey);
-        const storedTimestamp = localStorage.getItem(dataTimestampKey);
+        const storedData = localStorage.getItem('ordersData');
+        const storedTimestamp = localStorage.getItem('ordersDataTimestamp');
         const now = new Date().getTime();
 
-        if (storedData && storedTimestamp && (now - storedTimestamp < dataExpirationTime)) {
+        if (storedData && storedTimestamp && (now - storedTimestamp < 24 * 60 * 60 * 1000)) {
             allData = JSON.parse(storedData);
             filteredData = allData;
-            dataLoaded = true;
-            loadTableData(filteredData);
+            initializeFuse();
+            loadTableData(filteredData, tableBody, noResultsMessage);
         } else {
             try {
-                allData = await fetchData('data/woo-orders.json');
+                const response = await fetch('data/woo-orders.json');
+                if (!response.ok) throw new Error('Network response was not ok');
+                allData = await response.json();
                 filteredData = allData;
-                dataLoaded = true;
-                localStorage.setItem(localStorageKey, JSON.stringify(allData));
-                localStorage.setItem(dataTimestampKey, now.toString());
-                loadTableData(filteredData);
+                localStorage.setItem('ordersData', JSON.stringify(allData));
+                localStorage.setItem('ordersDataTimestamp', now.toString());
+                initializeFuse();
+                loadTableData(filteredData, tableBody, noResultsMessage);
             } catch (error) {
                 console.error('Failed to load initial data:', error);
             }
         }
     }
 
-    async function refreshData() {
-        try {
-            allData = await fetchData('data/woo-orders.json');
-            filteredData = allData;
-            loadTableData(filteredData);
-        } catch (error) {
-            console.error('Failed to refresh data:', error);
-        }
+    function applyFiltersAndUpdateTable() {
+        const filters = {
+            customerName: searchCustomer?.value || '',
+            productFilter: productFilter?.value || '',
+            paymentMethod: paymentMethodFilter?.value || ''
+        };
+
+        filteredData = applyFilters(allData, filters);
+        loadTableData(filteredData, tableBody, noResultsMessage);
     }
 
-    // Event listeners for filters and search
+    function applySearchAndUpdateTable() {
+        const query = searchBox.value || '';
+        const results = fuse.search(query).map(result => result.item);
+        loadTableData(results, tableBody, noResultsMessage);
+    }
+
     if (searchCustomer) {
-        searchCustomer.addEventListener('input', () => applyFilters(allData, searchCustomer, null, productFilter, paymentMethodFilter, loadTableData));
+        searchCustomer.addEventListener('input', debounce(applyFiltersAndUpdateTable, 300));
     }
+
     if (productFilter) {
-        productFilter.addEventListener('input', () => applyFilters(allData, searchCustomer, null, productFilter, paymentMethodFilter, loadTableData));
+        productFilter.addEventListener('input', debounce(applyFiltersAndUpdateTable, 300));
     }
+
     if (paymentMethodFilter) {
-        paymentMethodFilter.addEventListener('change', () => applyFilters(allData, searchCustomer, null, productFilter, paymentMethodFilter, loadTableData));
+        paymentMethodFilter.addEventListener('change', applyFiltersAndUpdateTable);
     }
+
+    const searchBox = document.querySelector('.search-box input');
     if (searchBox) {
-        searchBox.addEventListener('input', () => applySearch(allData, searchBox, loadTableData));
+        searchBox.addEventListener('input', debounce(applySearchAndUpdateTable, 300));
     }
 
-    // Event listener for refresh button
     if (refreshButton) {
-        refreshButton.addEventListener('click', refreshData);
+        refreshButton.addEventListener('click', loadInitialData);
     }
 
-    // Load initial data
+    if (exportButton) {
+        exportButton.addEventListener('click', () => {
+            const selectedCheckboxes = document.querySelectorAll('.order-checkbox:checked');
+            const selectedOrders = Array.from(selectedCheckboxes).map(checkbox => checkbox.getAttribute('data-id'));
+            console.log('Export Orders:', selectedOrders);
+        });
+    }
+
+    if (bulkCheckbox) {
+        bulkCheckbox.addEventListener('change', (event) => {
+            document.querySelectorAll('.order-checkbox').forEach(checkbox => {
+                checkbox.checked = event.target.checked;
+            });
+        });
+    }
+
+    tableBody.addEventListener('change', (event) => {
+        if (event.target.classList.contains('order-checkbox')) {
+            const selectedCheckboxes = document.querySelectorAll('.order-checkbox:checked');
+            console.log('Selected Orders:', Array.from(selectedCheckboxes).map(checkbox => checkbox.getAttribute('data-id')));
+        }
+    });
+
+    tableBody.addEventListener('click', (event) => {
+        if (event.target.classList.contains('view-details')) {
+            const id = event.target.getAttribute('data-id');
+            const order = allData.find(order => order.orderNumber == id);
+            if (order) {
+                updateModalDetails(order);
+                modal.show();
+            }
+        }
+    });
+
     loadInitialData();
 });

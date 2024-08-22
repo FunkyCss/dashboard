@@ -1,16 +1,20 @@
-// tableRenderer.js
-export function loadTableData(data) {
-    const tableBody = document.querySelector('#orders-table-body');
-    tableBody.innerHTML = ''; // Clear the table
-    const noResultsMessage = document.getElementById('noResultsMessage');
-    noResultsMessage.style.display = data.length === 0 ? 'block' : 'none';
+// tableRender.js
+export function loadTableData(data, tableBody, noResultsMessage) {
+    tableBody.innerHTML = '';
+
+    if (data.length === 0) {
+        noResultsMessage.style.display = 'block';
+    } else {
+        noResultsMessage.style.display = 'none';
+    }
 
     data.forEach((item, index) => {
         const rowClass = item.paymentMethod === 'Κάρτα' ? 'payment-card' :
                          item.paymentMethod === 'Αντικαταβολή' ? 'payment-cod' :
                          item.paymentMethod === 'Paypal' ? 'payment-paypal' : '';
-                         
+
         let row = `<tr class="${rowClass}">
+            <td><input type="checkbox" class="order-checkbox" data-id="${item.orderNumber}"></td>
             <td>${index + 1}</td>
             <td>${item.orderNumber}</td>
             <td>${item.customerName}</td>

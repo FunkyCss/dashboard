@@ -5,28 +5,114 @@
 
 /* Body Styles */
 body {
-    line-height: 1.6; /* Improves readability */
     font-family: 'Roboto', sans-serif;
     background-color: var(--panel-color); /* Λευκό φόντο για το σώμα */
     color: var(--text-color); /* Μαύρο κείμενο */
     transition: background-color 0.3s ease;
     padding-top: 56px; /* Διάστημα για την fixed navbar */
 }
+/* Root Variables */
+:root {
+    /* Color Scheme */
+    --primary-color: #0E4BF1;
+    --panel-color: #FFF;
+    --text-color: #000;
+    --black-light-color: #707070;
+    --border-color: #e6e5e5;
+    --toggle-color: #DDD;
+    --box1-color: #4DA3FF;
+    --box2-color: #FFE6AC;
+    --box3-color: #E7D1FC;
+}
+
+/* Sidebar styling */
+#sidebar {
+    width: 250px; /* Πλάτος sidebar */
+    position: fixed; /* Σταθερή θέση για να μείνει αριστερά */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Πλήρες ύψος */
+    background-color: #343a40; /* Σκούρο background */
+    padding: 1rem; /* Εσωτερικά περιθώρια */
+    overflow-y: auto; /* Κύλιση όταν χρειάζεται */
+    z-index: 1000; /* Πάνω από το υπόλοιπο περιεχόμενο */
+}
+
+#sidebar ul {
+    padding-left: 0; /* Κατάργηση padding από λίστα */
+}
+
+#sidebar ul li {
+    list-style: none; /* Αφαίρεση bullets από λίστα */
+}
+
+#sidebar ul li a {
+    color: #ffffff; /* Λευκά links */
+    text-decoration: none; /* Χωρίς υπογράμμιση */
+    padding: 10px 15px; /* Κενά γύρω από τα links */
+    display: block; /* Block για ολόκληρη την περιοχή του link */
+    border-radius: 5px; /* Στρογγυλεμένες γωνίες */
+    transition: background-color 0.3s; /* Εφέ μετάβασης */
+}
+
+#sidebar ul li a:hover {
+    background-color: #495057; /* Hover effect */
+}
+
+/* Top bar styling */
+.top {
+    position: fixed; /* Σταθερή θέση στην κορυφή */
+    top: 0;
+    left: 250px; /* Για να αρχίζει μετά το sidebar */
+    width: calc(100% - 250px); /* Καλύπτει το υπόλοιπο πλάτος */
+    background-color: #f8f9fa; /* Ανοιχτό background */
+    padding: 15px;
+    z-index: 999; /* Πάνω από το υπόλοιπο περιεχόμενο */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Main container styling */
+.container {
+    margin-top: 80px; /* Χώρος για την top bar */
+    margin-left: 270px; /* Χώρος για το sidebar */
+    padding: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 100%; /* Sidebar γεμίζει ολόκληρη την οθόνη σε μικρές συσκευές */
+        height: auto; /* Προσαρμόζεται το ύψος */
+        position: relative;
+    }
+
+    .top {
+        left: 0;
+        width: 100%;
+    }
+
+    .container {
+        margin-left: 0;
+        margin-top: 100px; /* Αφήνουμε χώρο για την top bar */
+    }
+}
+
+
 
 .table tbody tr {
     cursor: pointer;
 }
 
 .table tbody tr:hover {
-    background-color: #e0e0e0; /* Slightly darker for better visibility */
+    background-color: #f5f5f5;
 }
 
 .modal-body p {
     margin: 5px 0;
 }
 .container {
-    width: 100%; /* Ensures full width on smaller screens */
-    padding: 0 15px; /* Adds padding on the sides */
     max-width: 1300px; /* Μπορείτε να προσαρμόσετε αυτό το πλάτος ανάλογα με τις ανάγκες σας */
 }
 
@@ -39,11 +125,6 @@ body {
     border: none;
     border-radius: 0.25rem;
     cursor: pointer;
-    
-}
-#exportButton:focus {
-    outline: 2px solid var(--primary-color); /* Adds focus outline */
-    outline-offset: 2px; /* Offset for better visibility */
 }
 
 #exportButton:hover {
@@ -54,3 +135,46 @@ body {
     font-size:13px;
 }
 
+/* Woo styles.css */
+
+.table-striped tbody tr {
+    transition: background-color 0.3s;
+}
+
+.table-striped tbody tr.payment-card {
+    background-color: #e0f7fa; /* Απαλό γαλάζιο */
+}
+
+.table-striped tbody tr.payment-cod {
+    background-color: #f5f5f5; /* Ελαφρύ γκρι */
+}
+
+.table-striped tbody tr.payment-paypal {
+    background-color: #f3e5f5; /* Ελαφρύ μωβ */
+}
+
+/* Filter Container */
+.filter-container {
+    display: flex;
+    flex-wrap: wrap; /* Κάνει τα φίλτρα να πηγαίνουν σε νέο row αν χρειαστεί */
+    gap: 15px; /* Απόσταση μεταξύ των φίλτρων */
+    padding: 10px;
+    background-color: var(--box2-color); /* Απαλό χρώμα φόντου για το container */
+    border-radius: 5px; /* Γωνίες για να φαίνεται πιο μαλακό */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ελαφρύ σκίασμα για βάθος */
+    margin-bottom: 20px; /* Απόσταση κάτω από το container */
+}
+
+/* Filter Items */
+.filter-item {
+    flex: 1; /* Επιτρέπει στα φίλτρα να μεγαλώνουν εξίσου */
+    min-width: 150px; /* Ελάχιστο πλάτος για κάθε φίλτρο */
+}
+
+/* Form Controls */
+.form-control {
+    border-radius: 0.25rem; /* Μαλακές γωνίες για τα πεδία εισόδου */
+    padding: 0.5rem; /* Μείωση padding για συμπαγέστερη εμφάνιση */
+    font-size: 0.875rem; /* Ελαφρώς μικρότερη γραμματοσειρά για καλύτερη εμφάνιση */
+    height: auto; /* Αποφυγή υπερβολικού ύψους */
+}
