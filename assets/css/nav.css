@@ -23,6 +23,7 @@
     padding: 1rem; /* Εσωτερικά περιθώρια */
     overflow-y: auto; /* Κύλιση όταν χρειάζεται */
     z-index: 1000; /* Πάνω από το υπόλοιπο περιεχόμενο */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Adds shadow to the sidebar */
 }
 
 #sidebar ul {
@@ -46,6 +47,10 @@
     background-color: #495057; /* Hover effect */
 }
 
+#sidebar ul li a:focus {
+    outline: 2px solid var(--primary-color); /* Outline for focus */
+    outline-offset: 2px; /* Offset for better visibility */
+}
 /* Top bar styling */
 .top {
     position: fixed; /* Σταθερή θέση στην κορυφή */
@@ -58,6 +63,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for the top bar */
 }
 
 /* Main container styling */
@@ -84,5 +90,9 @@
         margin-left: 0;
         margin-top: 100px; /* Αφήνουμε χώρο για την top bar */
     }
+}
+
+@media (max-width: 1024px) {
+    /* Additional styles for tablet view if needed */
 }
 
