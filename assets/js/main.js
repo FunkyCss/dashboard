@@ -1,5 +1,4 @@
 // main.js
-import { debounce } from '../helpers/utils.js';
 import { fetchData } from '../helpers/dataService.js';
 import { loadTableData } from '../helpers/tableRenderer.js';
 import { updateModalDetails } from '../helpers/modalService.js';
@@ -11,47 +10,85 @@ document.addEventListener('DOMContentLoaded', function() {
     const productFilter = document.getElementById('productFilter');
     const paymentMethodFilter = document.getElementById('paymentMethodFilter');
     const exportButton = document.getElementById('exportButton');
+    const refreshButton = document.getElementById('refreshButton');
     const tableBody = document.querySelector('#orders-table-body');
     const noResultsMessage = document.getElementById('noResultsMessage');
+    const bulkCheckbox = document.getElementById('bulkCheckbox');
 
     let allData = [];
     let filteredData = [];
+    let dataLoaded = false; // Flag για την κατάσταση φόρτωσης των δεδομένων
 
-    // Load data initially
-    fetchData('data/woo-orders.json');
+const localStorageKey = 'ordersData';
+const dataTimestampKey = 'ordersDataTimestamp';
+const dataExpirationTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-    function fetchData(url) {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                allData = data;
-                filteredData = data;
-                loadTableData(data);
-            })
-            .catch(error => console.error('Error loading data:', error));
+async function loadInitialData() {
+    const storedData = localStorage.getItem(localStorageKey);
+    const storedTimestamp = localStorage.getItem(dataTimestampKey);
+    const now = new Date().getTime();
+
+    if (storedData && storedTimestamp && (now - storedTimestamp < dataExpirationTime)) {
+        // Data is valid and not expired
+        allData = JSON.parse(storedData);
+        filteredData = allData;
+        dataLoaded = true;
+        loadTableData(filteredData);
+    } else {
+        // Fetch fresh data from the server
+        async function fetchData(url) {
+            const response = await fetch(url, {
+                cache: 'no-cache'
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }
+
+        try {
+            allData = await fetchData('data/woo-orders.json');
+            filteredData = allData;
+            dataLoaded = true;
+
+            // Store the data and timestamp in local storage
+            localStorage.setItem(localStorageKey, JSON.stringify(allData));
+            localStorage.setItem(dataTimestampKey, now.toString());
+
+            loadTableData(filteredData);
+        } catch (error) {
+            console.error('Failed to load initial data:', error);
+        }
+    }
+}
+
+    
+    async function refreshData() {
+        try {
+            allData = await fetchData('data/woo-orders.json');
+            filteredData = allData;
+            loadTableData(filteredData);
+        } catch (error) {
+            console.error('Failed to refresh data:', error);
+        }
     }
 
     function loadTableData(data) {
         tableBody.innerHTML = ''; // Καθαρίζει τον πίνακα
-    
+
         if (data.length === 0) {
             noResultsMessage.style.display = 'block';
         } else {
             noResultsMessage.style.display = 'none';
         }
-    
+
         data.forEach((item, index) => {
             const rowClass = item.paymentMethod === 'Κάρτα' ? 'payment-card' :
                             item.paymentMethod === 'Αντικαταβολή' ? 'payment-cod' :
                             item.paymentMethod === 'Paypal' ? 'payment-paypal' : '';
-    
+
             let row = `<tr class="${rowClass}">
-                <td>${index + 1}</td> <!-- Προσθέτουμε αριθμό σειράς -->
+                <td>${index + 1}</td>
                 <td>${item.orderNumber}</td>
                 <td>${item.customerName}</td>
                 <td>${item.orderDate}</td>
@@ -64,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </tr>`;
             tableBody.insertAdjacentHTML('beforeend', row);
         });
-    
+
         // Προσθέτουμε ακροατές για τα κουμπιά "Προβολή"
         document.querySelectorAll('.view-details').forEach(button => {
             button.addEventListener('click', function() {
@@ -77,56 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
-    }
-
-    function updateModalDetails(order) {
-        document.getElementById('modalCustomerName').innerText = order.customerName || 'Δεν διατίθεται';
-        document.getElementById('modalAddress').innerText = order.address || 'Δεν διατίθεται';
-        document.getElementById('modalArea').innerText = order.area || 'Δεν διατίθεται';
-        document.getElementById('modalZip').innerText = order.zip || 'Δεν διατίθεται';
-        document.getElementById('modalPhone').innerText = order.phone || 'Δεν διατίθεται';
-        document.getElementById('modalEmail').innerText = order.email || 'Δεν διατίθεται'; // Νέο πεδίο
-        document.getElementById('modalComments').innerText = order.comments || 'Δεν διατίθεται'; // Νέο πεδίο
-        document.getElementById('modalPaymentMethod').innerText = order.paymentMethod || 'Δεν διατίθεται';
-    }
-
-    function applyFilters() {
-        filteredData = allData;  // Αρχικά αναθέτουμε όλα τα δεδομένα
-        
-        const searchValue = searchCustomer ? searchCustomer.value.toLowerCase() : '';
-        const productValue = productFilter ? productFilter.value.toLowerCase() : '';
-        const paymentMethodValue = paymentMethodFilter ? paymentMethodFilter.value : '';
-
-        // Φιλτράρισμα ανά πελάτη
-        if (searchValue) {
-            filteredData = filteredData.filter(item => item.customerName.toLowerCase().includes(searchValue));
-        }
-
-        // Φιλτράρισμα ανά προϊόν
-        if (productValue) {
-            filteredData = filteredData.filter(item => item.products.some(product => product.toLowerCase().includes(productValue)));
-        }
-
-        // Φιλτράρισμα ανά μέθοδο πληρωμής
-        if (paymentMethodValue) {
-            filteredData = filteredData.filter(item => item.paymentMethod === paymentMethodValue);
-        }
-
-        loadTableData(filteredData);
-    }
-
-    function applySearch() {
-        const searchValue = searchBox ? searchBox.value.toLowerCase() : '';
-
-        filteredData = allData.filter(item => {
-            return item.orderNumber.toString().includes(searchValue) ||
-                   item.customerName.toLowerCase().includes(searchValue) ||
-                   item.products.some(product => product.toLowerCase().includes(searchValue)) ||
-                   item.amount.toString().includes(searchValue) ||
-                   item.paymentMethod.toLowerCase().includes(searchValue);
-        });
-
-        loadTableData(filteredData);
     }
 
     // Event listeners για τα φίλτρα και την αναζήτηση
@@ -146,7 +133,18 @@ document.addEventListener('DOMContentLoaded', function() {
         searchBox.addEventListener('input', applySearch);
     }
 
-    // Φόρτωση αρχικών δεδομένων
+    // Event listener για το κουμπί ανανέωσης
+    if (refreshButton) {
+        refreshButton.addEventListener('click', refreshData);
+    }
+
+    // Event listener για το κουμπί εξαγωγής
+    if (exportButton) {
+        exportButton.addEventListener('click', function() {
+            // Εδώ θα προστεθεί ο κώδικας για την εξαγωγή σε Excel
+        });
+    }
+
     // Event delegation for view details buttons
     tableBody.addEventListener('click', function (event) {
         if (event.target.classList.contains('view-details')) {
@@ -167,4 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Φόρτωση αρχικών δεδομένων
+    loadInitialData();
 });
