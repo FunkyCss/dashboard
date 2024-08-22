@@ -3,7 +3,7 @@ import { loadTableData } from '../helpers/tableRenderer.js';
 import { updateModalDetails } from '../helpers/modalService.js';
 import { debounce } from '../helpers/utils.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     const searchCustomer = document.getElementById('searchCustomer');
     const productFilter = document.getElementById('productFilter');
     const paymentMethodFilter = document.getElementById('paymentMethodFilter');
@@ -33,28 +33,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function loadInitialData() {
-        const storedData = localStorage.getItem('ordersData');
-        const storedTimestamp = localStorage.getItem('ordersDataTimestamp');
-        const now = new Date().getTime();
+        console.log('Loading Initial Data...');
 
-        if (storedData && storedTimestamp && (now - storedTimestamp < 24 * 60 * 60 * 1000)) {
-            allData = JSON.parse(storedData);
+        try {
+            const response = await fetch('data/woo-orders.json');
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            
+            // Ενημέρωση των δεδομένων
+            allData = data;
             filteredData = allData;
             initializeFuse();
             loadTableData(filteredData, tableBody, noResultsMessage);
-        } else {
-            try {
-                const response = await fetch('data/woo-orders.json');
-                if (!response.ok) throw new Error('Network response was not ok');
-                allData = await response.json();
-                filteredData = allData;
-                localStorage.setItem('ordersData', JSON.stringify(allData));
-                localStorage.setItem('ordersDataTimestamp', now.toString());
-                initializeFuse();
-                loadTableData(filteredData, tableBody, noResultsMessage);
-            } catch (error) {
-                console.error('Failed to load initial data:', error);
-            }
+
+            console.log('Data refreshed');
+        } catch (error) {
+            console.error('Failed to load initial data:', error);
         }
     }
 
@@ -93,7 +87,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (refreshButton) {
-        refreshButton.addEventListener('click', loadInitialData);
+        refreshButton.addEventListener('click', () => {
+            console.log('Refresh button clicked');
+            loadInitialData(); // Επαναφόρτωση δεδομένων μόνο με το πάτημα του κουμπιού
+        });
     }
 
     if (exportButton) {
@@ -130,5 +127,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    loadInitialData();
+    // Αρχική φόρτωση μπορεί να αφαιρεθεί ή να τροποποιηθεί αν χρειάζεται
 });

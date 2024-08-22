@@ -1,4 +1,4 @@
-// tableRender.js
+// tableRenderer.js
 export function loadTableData(data, tableBody, noResultsMessage) {
     tableBody.innerHTML = '';
 
