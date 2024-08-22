@@ -1,6 +1,4 @@
 // dataService.js
-
-// dataService.js
 export async function fetchData(url) {
     try {
         const response = await fetch(url);
