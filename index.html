@@ -14,34 +14,34 @@
 <body>
 
     <!-- Sidebar -->
-    <nav id="sidebar" class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
-            <img src="/assets/img/logo.png" alt="jerrycherry" width="120" height="" class="rounded-circle">
-        </a>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a href="index.html" class="nav-link active" aria-current="page">
-                    <i class="fa-solid fa-file-circle-plus"></i>
-                    <span>Παραγγελίες</span>
-                </a>
-            </li>
-            <li>
-                <a href="payments.html" class="nav-link">
-                    <i class="fa-solid fa-credit-card"></i>
-                    <span>Πληρωμές</span>
-                </a>
-            </li>
-            <li>
-                <a href="returns.html" class="nav-link">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span>Επιστροφές</span>
-                </a>
-            </li>
-        </ul>
-        <hr>
-   
-    </nav>
+ <!-- Sidebar -->
+<nav id="sidebar" class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
+        <img src="/assets/img/logo.png" alt="jerrycherry" width="120" class="rounded-circle">
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="index.html" class="nav-link active" aria-current="page">
+                <i class="fa-solid fa-file-circle-plus"></i>
+                <span>Παραγγελίες</span>
+            </a>
+        </li>
+        <li>
+            <a href="payments.html" class="nav-link">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Πληρωμές</span>
+            </a>
+        </li>
+        <li>
+            <a href="returns.html" class="nav-link">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Επιστροφές</span>
+            </a>
+        </li>
+    </ul>
+    <hr>
+</nav>
 
     <!-- Main Content -->
     <div class="container mt-4">
@@ -72,7 +72,11 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th><input type="checkbox" id="bulkCheckbox"></th > <!-- Bulk checkbox column -->
+                    <th>
+                        <label for="bulkCheckbox" class="form-check-label">
+                            <input type="checkbox" id="bulkCheckbox" class="form-check-input">
+                        </label>
+                    </th>
                     <th>Αρ. Παραγγελίας</th>
                     <th>Όνομα</th>
                     <th>Ημ/νία</th>
@@ -132,12 +136,12 @@
         <i class="fa-solid fa-bell"></i>  <!-- Icon for notifications -->
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script type="module" src="assets/js/main.js"></script>
-    <script src="assets/js/sheet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" defer></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js" defer></script>
+    <script type="module" src="assets/js/main.js" defer></script>
+    <script src="assets/js/sheet.js" defer></script>
 
 </body>
 </html>
